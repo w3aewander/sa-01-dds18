@@ -6,6 +6,7 @@ package br.dev.wscom.estoqueapp;
 
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -41,6 +42,7 @@ public class ListarProdutosEstoque extends javax.swing.JFrame {
         try {
             var model = new DefaultTableModel();
 
+            model.addColumn("Código");
             model.addColumn("Descrição");
             model.addColumn("Custo");
             model.addColumn("Qtde atual");
@@ -53,6 +55,7 @@ public class ListarProdutosEstoque extends javax.swing.JFrame {
             produtos.forEach(p -> {
 
                 model.addRow(new Object[]{
+                    p.get("codigo"),
                     p.get("descricao"),
                     p.get("preco_custo"),
                     p.get("qtde_atual"),
@@ -151,6 +154,9 @@ public class ListarProdutosEstoque extends javax.swing.JFrame {
         tblProdutos.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tblProdutosKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tblProdutosKeyReleased(evt);
             }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 tblProdutosKeyTyped(evt);
@@ -305,20 +311,48 @@ public class ListarProdutosEstoque extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void tblProdutosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblProdutosKeyTyped
-       carregarDadosParaFormulario();
+        carregarDadosParaFormulario();
     }//GEN-LAST:event_tblProdutosKeyTyped
 
     private void tblProdutosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProdutosMouseClicked
-         carregarDadosParaFormulario();
+        carregarDadosParaFormulario();
     }//GEN-LAST:event_tblProdutosMouseClicked
 
     private void tblProdutosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblProdutosKeyPressed
         // TODO add your handling code here:
-        
-         boolean keyPressedUpDown = evt.getKeyCode() == KeyEvent.VK_UP || evt.getKeyCode()== KeyEvent.VK_DOWN;
-         
-         if ( keyPressedUpDown ) carregarDadosParaFormulario();
+
+        boolean keyPressedUpDown = evt.getKeyCode() == KeyEvent.VK_UP || evt.getKeyCode() == KeyEvent.VK_DOWN;
+
+        if (keyPressedUpDown)
+            carregarDadosParaFormulario();
     }//GEN-LAST:event_tblProdutosKeyPressed
+
+    private void tblProdutosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblProdutosKeyReleased
+
+        boolean keyPressedUpDown = evt.getKeyCode() == KeyEvent.VK_UP
+                || evt.getKeyCode() == KeyEvent.VK_DOWN;
+
+        if (keyPressedUpDown) {
+            carregarDadosParaFormulario();
+        }
+
+    }//GEN-LAST:event_tblProdutosKeyReleased
+
+    public void atualizarDados() {
+
+        int linha = tblProdutos.getSelectedRow();
+        String descricao = tblProdutos.getValueAt(linha, 1).toString();
+        var produto = new HashMap<String, String>();
+
+        produto.put("descricao", tblProdutos.getValueAt(linha, 1).toString());
+        produto.put("preco_custo", tblProdutos.getValueAt(linha, 2).toString());
+        produto.put("qtde_atual", tblProdutos.getValueAt(linha, 3).toString());
+        produto.put("qtde_maxima", tblProdutos.getValueAt(linha, 4).toString());
+        produto.put("qtde_minima", tblProdutos.getValueAt(linha, 5).toString());
+
+        LeitorCSV.atualizar(descricao, produto);
+
+    }
 
     /**
      * @param args the command line arguments
