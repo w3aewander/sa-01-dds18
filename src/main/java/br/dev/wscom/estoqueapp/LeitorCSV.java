@@ -45,11 +45,12 @@ public class LeitorCSV {
             // Ler os dados de cada token        
             var produto = new HashMap<String, String>();
 
-            produto.put("descricao", tokens[0]);
-            produto.put("preco_custo", tokens[1]);
-            produto.put("qtde_atual", tokens[2]);
-            produto.put("qtde_maxima", tokens[3]);
-            produto.put("qtde_minima", tokens[4]);
+            produto.put("codigo", tokens[0]);
+            produto.put("descricao", tokens[1]);
+            produto.put("preco_custo", tokens[2]);
+            produto.put("qtde_atual", tokens[3]);
+            produto.put("qtde_maxima", tokens[4]);
+            produto.put("qtde_minima", tokens[5]);
 
             produtos.add(produto);
 
@@ -99,13 +100,18 @@ public class LeitorCSV {
     public static void salvarNoArquivo(String caminho) throws FileNotFoundException {
 
         try {
+            
             // Abre o arquivo para gravação
             FileOutputStream arquivo = new FileOutputStream(caminho);
 
+            //Recria o cabeçalho no arquivo
+            String titulo = "CODIGO;DESCRICAO;PRECO_CUSTO;QTDE_ATUAL;QTDE_MAXIMA;QTDE_MINIMA\n";
+            arquivo.write(titulo.getBytes());
+            
             produtos.forEach(p -> {
                 try {
                     // Escreve no arquivo
-                    String texto = p.get("descricao") + ";" + p.get("preco_custo") + ";" + p.get("qtde_atual") + ";" + p.get("qtde_maxima") + ";" + p.get("qtde_minima") + "\n";
+                    String texto = p.get("codigo") + ";" + p.get("descricao") + ";" + p.get("preco_custo") + ";" + p.get("qtde_atual") + ";" + p.get("qtde_maxima") + ";" + p.get("qtde_minima") + "\n";
                     arquivo.write(texto.getBytes());
                 } catch (IOException ex) {
                     Logger.getLogger(LeitorCSV.class.getName()).log(Level.SEVERE, null, ex);
